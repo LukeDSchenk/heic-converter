@@ -1,12 +1,29 @@
+import logging
 import os
+from typing import List
+
 import pyheif
 from PIL import Image
 
-for root, dirs, files in os.walk(".", topdown=False):
-    for name in files:
-        if ".heic" in name.lower() and root == ".":
+logger = logging.getLogger(__name__)
+
+
+def heics_to_jpg(files: List[str], save_path: str = "~/h2j-converts"):
+    """
+    Convert a list of HEIC files to JPEGs. Consider defaulting to storing the files
+    in the same folder that the file was in originally.
+
+    :param list files: List of fs of HEICs to convert.
+    :param str save_path: Optional folder to save converted files to.
+    """
+
+    for f in files:
+        filepath, extension = os.path.splitext(f)
+        filename = filepath.split("/")[-1]
+
+        if extension.lower() == ".heic":
             try:
-                heif_file = pyheif.read(name)
+                heif_file = pyheif.read(f)
                 image = Image.frombytes(
                     heif_file.mode,
                     heif_file.size,
@@ -16,15 +33,10 @@ for root, dirs, files in os.walk(".", topdown=False):
                     heif_file.stride,
                 )
 
-                new_file = name.replace(".heic", ".jpg")
-                new_file = new_file.replace(".HEIC", ".jpg")
-
+                new_file = os.path.join(save_path, filename, ".jpg")
                 image.save(new_file, "JPEG")
-                print(f"created {new_file}")
-
-            # take this out after
+                logging.info(f"created {new_file}")
             except Exception as e:
-                if str(e) == "Input is not a HEIF/AVIF file":
-                    new_file = name.replace(".heic", ".jpg")
-                    new_file = new_file.replace(".HEIC", ".jpg")
-                    os.rename(name, new_file)
+                logger.error(f"failed to convert {f}: {e}")
+        else:
+            logger.warning(f"{f} is not a HEIC file, skipping")
