@@ -1,6 +1,8 @@
 # heic-converter
 
-A simple GUI tool for converting many HEIC images into JPEGs quickly. 
+A simple GUI tool for converting many HEIC images into JPEGs quickly.
+
+![heic-converter GUI](./heic-converter.pn)
 
 ## Backstory
 
