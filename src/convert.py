@@ -21,7 +21,7 @@ def heics_to_jpg(files: List[str], save_path: str = "~/h2j-converts"):
         filepath, extension = os.path.splitext(f)
         filename = filepath.split("/")[-1]
 
-        if extension.lower() == ".heic":
+        if extension.lower() in {".heic", ".heif"}:
             try:
                 heif_file = pyheif.read(f)
                 image = Image.frombytes(
