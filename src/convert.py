@@ -8,7 +8,7 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 
-def heics_to_jpg(files: List[str], save_path: str = "~/h2j-converts"):
+def heics_to_jpg(files: List[str], save_path: str = "./h2j"):
     """
     Convert a list of HEIC files to JPEGs. Consider defaulting to storing the files
     in the same folder that the file was in originally.
@@ -33,7 +33,8 @@ def heics_to_jpg(files: List[str], save_path: str = "~/h2j-converts"):
                     heif_file.stride,
                 )
 
-                new_file = os.path.join(save_path, filename, ".jpg")
+                new_file = os.path.join(save_path, filename) + ".jpg"
+                os.makedirs(save_path, exist_ok=True)
                 image.save(new_file, "JPEG")
                 logging.info(f"created {new_file}")
             except Exception as e:
